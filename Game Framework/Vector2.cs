@@ -24,6 +24,10 @@ namespace Game_Framework
             y = newY;
         }
 
+        public override string ToString()
+        {
+            return "{ " + x + ", " + y + " }";
+        }
 
         public static Vector2 operator +(Vector2 lhs, Vector2 rhs)
         {
@@ -54,5 +58,58 @@ namespace Game_Framework
         {
             return new Vector2(scaler / vector.x, scaler / vector.y);
         }
+
+        public float Dot(Vector2 rhs)
+        {
+            return x * rhs.x + y * rhs.y;
+        }       
+
+        public float Magnitude()
+        {
+            return (float)Math.Sqrt(x * x + y * y);
+        }
+
+        public float MagnitudeSqr()
+        {
+            return (x * x + y * y);
+        }
+
+        public float Distance(Vector2 other)
+        {
+            float diffX = x - other.x;
+            float diffY = y - other.y;
+
+            return (float)Math.Sqrt(diffX * diffX + diffY * diffY);
+
+        }
+
+        public float DistanceSqr(Vector3 other)
+        {
+            float diffX = x - other.x;
+            float diffY = y - other.y;
+
+            return (diffX * diffX + diffY * diffY);
+
+        }
+
+        public void Normalize()
+        {
+            float m = Magnitude();
+            this.x /= m;
+            this.y /= m;
+        }
+
+        public Vector2 GetNormalised()
+        {
+            return (this / Magnitude());
+        }
+
+        public float Angle(Vector2 other)
+        {
+            Vector2 a = GetNormalised();
+            Vector2 b = other.GetNormalised();
+            return (float)Math.Acos(a.x * b.x + a.y * b.y);
+        }
+
     }
 }

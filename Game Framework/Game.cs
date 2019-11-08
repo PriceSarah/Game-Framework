@@ -16,21 +16,40 @@ namespace Game_Framework
         public static readonly int SizeY = 16;
         //whether or not the Game should finish Running and exit
         public static bool Gameover = false;
-
+        //Scene currently running
         private static Scene _currentScene;
+        //Scene were about to enter
+        private static Scene _nextScene;
+        //Camera for the 3D view
+        private Camera3D _camera;
 
         public Game()
         {
             RL.InitWindow(640, 640, "Hello World");
             RL.SetTargetFPS(15);
-           
+
+            
+        }
+
+        public static Scene CurrentScene
+        {
+            set
+            {
+                _nextScene = value;
+            }
+            get
+            {
+                return _currentScene;
+            }
         }
 
         private void Init()
         {
             //make rooms
             Room startingroom = LoadRoom("StartRoom.txt");
-            Room northRoom = LoadRoom("Room2.txt");
+            Room northRoom = LoadRoom("room2.txt");
+
+            
 
             Enemy enemy = new Enemy("enemy.png");
             void StartNorthRoom()
@@ -89,14 +108,7 @@ namespace Game_Framework
                 startingroom.AddEntity(new Wall(startingroom.SizeX - 1, i));
             }
 
-            //add player
-            Player player = new Player("player.png");
-            player.X = 15;
-            player.Y = 15;
-
-            //add enemy to northroom
-            startingroom.AddEntity(player);
-            northRoom.AddEntity(enemy);
+           
 
             CurrentScene = startingroom;
         }
@@ -114,29 +126,35 @@ namespace Game_Framework
             //Loop until the game is over
             while (!Gameover && !RL.WindowShouldClose())
             {
+
+                //Start Scene
+                if (_currentScene != _nextScene)
+                {
+                    _currentScene = _nextScene;
+                    _currentScene.Start();
+                }
+
+                //Update the active scene
                 _currentScene.Update();
 
-                RL.BeginDrawing();                
-                _currentScene.Draw();
-                RL.EndDrawing();
+                //int mouseX = (RL.GetMouseX() + 640) / 16;
+                //int mouseY = (RL.GetMouseY() + 640) / 16;
+                //Raylib.Vector3 cameraPosition = new Raylib.Vector3(-10, -10, -10);
+                //Raylib.Vector3 cameraTarget = new Raylib.Vector3(mouseX, mouseY, 240);
+                //Raylib.Vector3 cameraUp = new Raylib.Vector3(1, 1, 1);
 
-                PlayerInput.ReadKey();
+                //_camera = new Camera3D(cameraPosition, cameraTarget, cameraUp);
+
+                RL.BeginDrawing();
+                //RL.BeginMode3D(_camera);
+                _currentScene.Draw();
+                //RL.EndMode3D();
+                RL.EndDrawing();
             }
 
             RL.CloseWindow();
         }
-        public static Scene CurrentScene
-        {
-            set
-            {
-                _currentScene = value;
-                _currentScene.Start();
-            }
-            get
-            {
-                return _currentScene;
-            }
-        }
+       
 
         //Exit program
         public void Exit()
@@ -156,37 +174,49 @@ namespace Game_Framework
 
             for (int y = 0; y < height; y++)
             {
+                string row = reader.ReadLine();
                 for (int x = 0; x < width; x++)
                 {
-                    if (reader.ReadLine() == "1")
+                    char tile = row[x];
+                    switch (tile)
                     {
-                        room.AddEntity(new Wall(x, y));
+                        case '1':
+                            room.AddEntity(new Wall(x, y));
+                            break;
+
+                        case '@':
+                            Player p = new Player();
+                            p.X = x;
+                            p.Y = y;
+                            room.AddEntity(p);
+                            Entity sword = new Entity('/', "images/tile133.png");
+                            p.AddChild(sword);
+                            sword.X += 0.5f;
+                            sword.Y += 0.5f;
+                            room.AddEntity(sword);
+                            break;
+                        case 'e':
+                            Enemy e = new Enemy();
+                            e.X = x;
+                            e.Y = y;
+                            room.AddEntity(e);
+                            break;
                     }
-                    if (reader.ReadLine() == "@")
-                    {
-                        Player player = new Player("player.jpg");
-                        player.X = x;
-                        player.Y = y;
-                        room.AddEntity(player);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid Room Size");
-                        Console.ReadKey();
-                        return new Room();
-                    }
+                   
                 }
             }
             return room;
         }
-       
-        private Entity LoadEntity(StreamReader reader)
-        {
-            string row = reader.ReadLine();
-            for (int i = 0; i < row.Length; i++)
-            {
-
-            }
-        }
+        
     }
+
+    /* private Entity LoadEntity(StreamReader reader)
+     {
+         char tile = Convert.ToChar(reader.Read());
+         switch (tile)
+         {
+             case 1:
+         }
+     }*/
 }
+

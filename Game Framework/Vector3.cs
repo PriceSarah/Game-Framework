@@ -26,6 +26,11 @@ namespace Game_Framework
             z = newZ;
         }
 
+        public override string ToString()
+        {
+            return "{ " + x + ", " + y + ", " + z + " }";
+        }
+
 
         public static Vector3 operator +(Vector3 lhs, Vector3 rhs)
         {
@@ -42,7 +47,7 @@ namespace Game_Framework
             return new Vector3(vector.x * scaler, vector.y * scaler, vector.z * scaler);
         }
 
-        public static Vector3 operator *( float scaler, Vector3 vector)
+        public static Vector3 operator *(float scaler, Vector3 vector)
         {
             return new Vector3(scaler * vector.x, scaler * vector.y, scaler * vector.z);
         }
@@ -55,6 +60,69 @@ namespace Game_Framework
         public static Vector3 operator /(float scaler, Vector3 vector)
         {
             return new Vector3(scaler / vector.x, scaler / vector.y, scaler / vector.z);
+        }
+
+        public float Dot(Vector3 rhs)
+        {
+            return x * rhs.x + y * rhs.y + z * rhs.z;
+        }
+
+        public float Magnitude()
+        {
+            return (float)Math.Sqrt(x * x + y * y + z * z);
+        }
+
+        public float MagnitudeSqr()
+        {
+            return (x * x + y * y + z * z);
+        }
+
+        public float Distance(Vector3 other)
+        {
+            float diffX = x - other.x;
+            float diffY = y - other.y;
+            float diffZ = z - other.z;
+
+            return (float)Math.Sqrt(diffX * diffX + diffY * diffY + diffZ * diffZ);
+
+        }
+
+        public float DistanceSqr(Vector3 other)
+        {
+            float diffX = x - other.x;
+            float diffY = y - other.y;
+            float diffZ = z - other.z;
+
+            return (diffX * diffX + diffY * diffY + diffZ * diffZ);
+
+        }
+
+        public void Normalize()
+        {
+            float m = Magnitude();
+            this.x /= m;
+            this.y /= m;
+            this.z /= m;
+        }
+
+        public Vector3 GetNormalised()
+        {
+            return (this / Magnitude());
+        }
+
+        public float Angle(Vector3 other)
+        {
+            Vector3 a = GetNormalised();
+            Vector3 b = other.GetNormalised();
+            return (float)Math.Acos(a.x * b.x + a.y * b.y + a.z * b.z);
+        }
+
+        public Vector3 Cross(Vector3 rhs)
+        {
+           return new Vector3(
+           y * rhs.z - z * rhs.y,
+           z * rhs.x - x * rhs.z,
+           x * rhs.y - y * rhs.x);
         }
 
     }

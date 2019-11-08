@@ -12,8 +12,17 @@ namespace Game_Framework
         {
             X = x;
             Y = y;
+            OriginX = 16;
+            OriginY = 16;
             Solid = true;
             Icon = '#';
+            OnUpdate += spin;
+        }
+
+        void spin()
+        {
+            // Rotation = 0.01f;
+            //Rotate(100f);
         }
     }
 }

@@ -9,25 +9,38 @@ namespace Game_Framework
 {
     class Player : Entity
     {
-        public Player() : this('@')
+
+        private PlayerInput _input = new PlayerInput();
+
+        public Player() : this("player.png")
         {
 
         }
 
         public Player(string imageName) : base('@', imageName)
         {
-            PlayerInput.AddKeyEvent(MoveRight, 100); //D
-            PlayerInput.AddKeyEvent(MoveLeft, 97); //A
-            PlayerInput.AddKeyEvent(MoveUp, 119); //W
-            PlayerInput.AddKeyEvent(MoveDown, 115); //S
+            _input.AddKeyEvent(MoveRight, 100); //D
+            _input.AddKeyEvent(MoveLeft, 97); //A
+            _input.AddKeyEvent(MoveUp, 119); //W
+            _input.AddKeyEvent(MoveDown, 115); //S
+            OnUpdate += _input.ReadKey;
+            OnUpdate += Orbit;
+        }
+
+        private void Orbit()
+        {
+            foreach (Entity child in _children)
+            {
+                child.Rotate(1.0f);
+            }
         }
 
         public Player(char icon) : base(icon)
         {
-            PlayerInput.AddKeyEvent(MoveRight, 100); //D
-            PlayerInput.AddKeyEvent(MoveLeft, 97); //A
-            PlayerInput.AddKeyEvent(MoveUp, 119); //W
-            PlayerInput.AddKeyEvent(MoveDown, 115); //S
+            _input.AddKeyEvent(MoveRight, 100); //D
+            _input.AddKeyEvent(MoveLeft, 97); //A
+            _input.AddKeyEvent(MoveUp, 119); //W
+            _input.AddKeyEvent(MoveDown, 115); //S
         }
 
         //Move one space to the right

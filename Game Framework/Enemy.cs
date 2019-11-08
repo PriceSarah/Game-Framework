@@ -10,7 +10,9 @@ namespace Game_Framework
     class Enemy : Entity
     {
         private Direction _facing;
-        public Enemy() : this('e')
+        public float Speed { get; set; } = .2f;
+
+        public Enemy() : this("enemy.png")
         {
         }
 
@@ -49,6 +51,7 @@ namespace Game_Framework
 
         private void Move()
         {
+            //Rotation = 5;
             switch (_facing)
             {
                 case Direction.North:
@@ -68,53 +71,53 @@ namespace Game_Framework
 
         private void MoveUp()
         {
-            if (!MyScene.GetCollision(X, Y - 1))
+            if (!MyScene.GetCollision(X, Y - Speed))
             {
-                Y--;
+                YVelocity = -Speed;
             }
             else
             {
+                YVelocity = 0f;
                 _facing++;
-                Move();
             }
         }
 
         private void MoveDown()
         {
-            if (!MyScene.GetCollision(X, Y + 1))
+            if (!MyScene.GetCollision(X, Y + Speed))
             {
-                Y++;
+                YVelocity = Speed;
             }
             else
             {
+                YVelocity = 0f;
                 _facing++;
-                Move();
             }
         }
 
         private void MoveRight()
         {
-            if (!MyScene.GetCollision(X + 1, Y))
+            if (!MyScene.GetCollision(X + Speed, Y))
             {
-                X++;
+                XVelocity = Speed;
             }
             else
             {
+                XVelocity = 0f;
                 _facing++;
-                Move();
             }
         }
 
         private void MoveLeft()
         {
-            if (!MyScene.GetCollision(X - 1, Y))
+            if (!MyScene.GetCollision(X - Speed, Y))
             {
-                X--;
+                XVelocity = -Speed;
             }
             else
             {
+                XVelocity = 0f;
                 _facing = Direction.North;
-                Move();
             }
         }
     }
